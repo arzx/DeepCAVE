@@ -1,4 +1,4 @@
-Installation
+cInstallation
 ============
 
 DeepCAVE needs `redis-server <https://flaviocopes.com/redis-installation/>`_ for the interactive

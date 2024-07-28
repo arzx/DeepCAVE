@@ -12,16 +12,21 @@ if ! [[ $INSTALLED ]]; then
     exit 1
 fi
 
-ROOT_PATH=`
-python << END
+ROOT_PATH=$(python << END
 import deepcave
 from pathlib import Path
 print(str(Path(deepcave.__file__).parent))
 END
-`
+)
 
 OPEN=$1
-N_WORKERS=$2
+N_WORKERS=$1
+
+# Ensure N_WORKERS is set and greater than 0
+if ! [[ $N_WORKERS ]] || [ "$N_WORKERS" -lt 1 ]; then
+    echo "N_WORKERS is not set or less than 1. Setting N_WORKERS to 1."
+    N_WORKERS=1
+fi
 
 # Save config value
 CONFIG=$3
@@ -65,7 +70,7 @@ fi
 # Start n workers in background
 for (( i=1; i<=$N_WORKERS; i++ ))
 do
-	python "$ROOT_PATH/worker.py" --config "$CONFIG" &
+    python "$ROOT_PATH/worker.py" --config "$CONFIG" &
 done
 
 ADDRESS=$(deepcave --get_config_value DASH_ADDRESS)
